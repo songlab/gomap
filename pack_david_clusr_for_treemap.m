@@ -67,7 +67,7 @@ for i=1:min(length(c),10)
        pr=max(1,round((1-pvl(j))/mpvl*10));%set color as a % of smallest pval
        d.color = cmp{pr};
        nm=char(rec(j).getTermName);
-       if nm(1)=='G' %if the cluster name is a GO term, deconstruct
+       if strcmp(nm(1:3),'GO:') %if the cluster name is a GO term, deconstruct
            tstr=textscan(nm,'GO:%s%s','delimiter','~');
            nm=tstr{2}{:};
            d.go=str2num(tstr{1}{:});
@@ -77,6 +77,7 @@ for i=1:min(length(c),10)
        end
        if ~isempty(GO) %if we have GO information and the term name is a
            if isfield(d,'go') %GO term, annotate the node with GO term info
+             try
                trm=GO(d.go).terms(1);
                if ~isempty(trm.ontology)
                    tmp=strrep(trm.ontology,'"','');
@@ -88,6 +89,8 @@ for i=1:min(length(c),10)
                    tmp=strrep(tmp,':','');
                    d.def=tmp;
                end
+             catch me
+             end
            end
        end
        d.gns=char(rec(j).getGeneIds);
@@ -108,8 +111,6 @@ for i=1:min(length(c),10)
                d.rank=smp.prank(idx(k));
                d.pvl=smp.pval(idx(k));
                d.fc=smp.fc(idx(k));
-               d.nsh=smp.nsh(idx(k));
-               d.mlodz=smp.mlodz(idx(k));
                pr=floor(d.rank/mxr*10);
                d.color=cmp{max(1,end-pr)};
                gtrm.children(k)=struct('id',...

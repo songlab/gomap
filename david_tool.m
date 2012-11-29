@@ -22,7 +22,7 @@ function varargout = david_tool(varargin)
 
 % Edit the above text to modify the response to help david_tool
 
-% Last Modified by GUIDE v2.5 27-Nov-2012 23:57:50
+% Last Modified by GUIDE v2.5 28-Nov-2012 11:22:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -65,9 +65,30 @@ main_data.pval=[];
 main_data.prank=[];
 main_data.gsymb={};
 main_data.gid=[];
+main_data.eml=[];
+main_data.GO=[];
+main_data.pname=pwd;
+h=waitbar(0,'loading java packaes');
+d=dir('david_java_client/lib/*.jar');
+wt=linspace(1/length(d),1,length(d));
+for i=1:length(d)
+    s=fullfile(['david_java_client/lib/' d(i).name]);
+    waitbar(wt(i),h,{'Loading java package:',strrep(s,'_','\_')})
+    javaaddpath(s);   
+end
+import david.xsd.*;
+import org.apache.axis2.AxisFault;
+import sample.session.client.util.*;
+import sample.session.service.xsd.*;
+import sample.session.client.stub.*;
+delete(h);
+wb=waitbar(0.5,'Loading gene ontology data.');
+main_data.GO=geneont('file','gene_ontology.obo');
+set(handles.david_tool_root,'UserData',main_data);
+delete(wb);
 set(handles.david_tool_root,'UserData',main_data);
 % UIWAIT makes david_tool wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.david_tool_root);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -96,14 +117,21 @@ if isent, s='%n';
 else, s='%s';end
 ge=get(handles.radiobutton1,'Value');
 if ge,s=[s '%n%n'];end
-[fname pname]=uigetfile('*','Select gene list...');
+[fname pname]=uigetfile(fullfile(main_data.pname, '*'),'Select gene list...');
+if ~fname,return;
+else,main_data.pname=pname;end
 f=fopen(fullfile(pname,fname));
 D=textscan(f,s);
-if ge, main_data.fc=D{2};main_data.pval=D{3};end
+if ge
+    main_data.fc=D{2};
+    main_data.pval=D{3};
+    [~,sidx]=sort(main_data.pval);
+    main_data.prank=sidx;
+end
 if isent
     main_data.gid=D{1};
     if strcmp(main_data.species,'Other')
-        for i=1:length(D{1}),s{i}=num2str(D{1}(i));end
+        for i=1:length(D{1}),t{i}=num2str(D{1}(i));end
     else
         if strcmp(main_data.species,'Homo sapien')
             load('entrez2gsymb_hsa.mat');ent2symb=ent2symb_hsa;
@@ -111,9 +139,9 @@ if isent
         if strcmp(main_data.species,'Mus musculus')
             load('entrez2gsymb_mmu.mat');ent2symb=ent2symb_mmu;
         end
-        for i=1:length(D{1}),s{i}=ent2symb(D{1}(i));end
+        for i=1:length(D{1}),t{i}=ent2symb(D{1}(i));end
     end
-    main_data.gsymb=s;
+    main_data.gsymb=t;
 else
     main_data.gsymb=D{1};
     isref=strcmp(main_data.id_type,'RefSeq accession');
@@ -134,36 +162,54 @@ else
     end
     main_data.gid=en;    
 end
-set(handles.david_tool_root,'UserData',main_data);
+if ge
+    gs{1}=sprintf('Gene : Entrez ID : Fold change : p-value\n');
+    for i=1:length(main_data.gid)
+        gs{i+1}=[sprintf('%s : ',main_data.gsymb{i}),sprintf('%i : ',main_data.gid(i)),...
+            sprintf('%g : ',main_data.fc(i)),sprintf('%g\n',main_data.pval(i))];
+    end
+else
+    gs{1}=sprintf('Gene\tEntrez ID\n');
+    for i=1:length(main_data.gid)
+        gs{i+1}=[sprintf('%s : ',main_data.gsymb{i}),sprintf('%i\n',main_data.gid(i))];
+    end
 end
+set(handles.glist_textbox,'String',gs);
+set(handles.david_tool_root,'UserData',main_data);
 
 % --- Executes on button press in query_david_btn.
 function query_david_btn_Callback(hObject, eventdata, handles)
 % hObject    handle to query_david_btn (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-main_data=get(handles.david_tool_root,'UserData',main_data);
+main_data=get(handles.david_tool_root,'UserData');
 if isempty(main_data.gid)
     alert('title','No data loaded','String','Load a gene list first');
     return;
 end
 if isempty(main_data.eml)
-    alert('title','Enter an email','String','No valid email found.');
+    alert('title','Enter an email in the edit box which is registered with DAVID','String','No valid email found.');
     return;
 end
-wb=waitbar(0.5,'loading gene ontology');
-GO=geneont('file','gene_ontology.obo');
-delete(wb);
-
-c=query_david(main_data.gid,eml);
-x=pack_david_clusr_for_treemap(c,smp,GO);
+c=query_david(main_data.gid,main_data.eml);
+if isempty(main_data.fc)
+    x=pack_david_clusr_for_treemap(c,[],main_data.GO);
+else
+    x=pack_david_clusr_for_treemap(c,main_data,main_data.GO);
+end
 clear c;
+pause(0.5);
+h=waitbar(0.25,'Writting javascript files');
 js=make_treemap_json_from_david(x);
-f=fopen('Jit/Examples/Treemap/data.js','w');
+f=fopen('david_cluster_report/data.js','w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
-web Jit/Examples/Treemap/david_treemap.html -browser
-
+waitbar(0.75,h,'Spawning web browser')
+web david_cluster_report/david_treemap.html -browser
+waitbar(0.9,h,'Packaging web files for you to use later')
+[fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
+zip(fullfile(pname,fname),'david_cluster_report');
+delete(h)
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
 % hObject    handle to popupmenu1 (see GCBO)
@@ -234,7 +280,9 @@ function edit1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
-
+main_data=get(handles.david_tool_root,'UserData');
+main_data.eml=get(hObject,'String');
+set(handles.david_tool_root,'UserData',main_data);
 
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
@@ -247,3 +295,12 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+web('http://david.abcc.ncifcrf.gov/webservice/register.htm')

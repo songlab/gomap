@@ -8,21 +8,9 @@ function c=query_david(ids,eml)
 %OUT x is an object containing a david gene ontology term
 %clustering report
 
+
 %warning('off','all')
-h=waitbar(0,'loading java packaes');
-d=dir('david_java_client/lib/*.jar');
-wt=linspace(0.3/length(d),0.3,length(d));
-for i=1:length(d)
-    s=fullfile(['david_java_client/lib/' d(i).name]);
-    waitbar(wt(i),h,{'Loading java package:',s})
-    javaaddpath(s);   
-end
-%import java.io.*;
-import david.xsd.*;
-import org.apache.axis2.AxisFault;
-import sample.session.client.util.*;
-import sample.session.service.xsd.*;
-import sample.session.client.stub.*;
+h=waitbar(0.1,'Initializing query...');
 stub=sample.session.client.stub.DAVIDWebServiceStub('http://david.abcc.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/');
 tmp=javaMethod('_getServiceClient',stub);
 tmp.getOptions.setManageSession(true);
@@ -46,8 +34,8 @@ else
     lst_name='user_list';
     lst_type=0;
     vld=stub.setCategories('');
-    addlst_out=stub.addList(lst,gtype,lst_name,lst_type);
-    stub.getSpecies
+    addlst_out=stub.addList(lst,'ENTREZ_GENE_ID',lst_name,lst_type);
+    %stub.getSpecies
     %all_lst_name=stub.getAllListNames();
     overlap = 3;
     initialSeed = 2;
@@ -58,4 +46,4 @@ else
     c=stub.getTermClusterReport(overlap,initialSeed,finalSeed,linkage,kappa);
     delete(h);
 end
-for i=1:length(d),javarmpath(fullfile(['david_java_client/lib/' d(i).name]));end
+%for i=1:length(d),javarmpath(fullfile(['david_java_client/lib/' d(i).name]));end
