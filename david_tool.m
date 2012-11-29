@@ -205,7 +205,7 @@ f=fopen('david_cluster_report/data.js','w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
 waitbar(0.75,h,'Spawning web browser')
-web david_cluster_report/david_treemap.html -browser
+web david_cluster_report/david_treemap.html
 waitbar(0.9,h,'Packaging web files for you to use later')
 [fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
 zip(fullfile(pname,fname),'david_cluster_report');
