@@ -57,7 +57,6 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
 main_data.id_type='ENTREZ gene ID';
 main_data.species='Homo sapien';
 main_data.fc=[];
@@ -201,14 +200,21 @@ clear c;
 pause(0.5);
 h=waitbar(0.25,'Writting javascript files');
 js=make_treemap_json_from_david(x);
-f=fopen('david_cluster_report/data.js','w');
+outdir=uigetdir;
+if ~outdir, delete(h);return;end
+unzip(which('david_clustering.zip'),outdir);
+f=fopen(fullfile(outdir,'david_clustering','data.js'),'w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
 waitbar(0.75,h,'Spawning web browser')
+<<<<<<< HEAD
 web(fullfile('david_cluster_report','david_treemap.html'))
+=======
+[stat,hnd,url]=web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
+>>>>>>> david_tool_giant
 waitbar(0.9,h,'Packaging web files for you to use later')
 [fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
-if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),'david_cluster_report');end
+if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,'david_clustering'));end
 delete(h)
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
