@@ -208,7 +208,7 @@ waitbar(0.75,h,'Spawning web browser')
 web david_cluster_report/david_treemap.html -browser
 waitbar(0.9,h,'Packaging web files for you to use later')
 [fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
-if ~isequal(fname,0),zip(fullfile(pname,fname),'david_cluster_report');end
+if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),'david_cluster_report');end
 delete(h)
 % --- Executes on selection change in popupmenu1.
 function popupmenu1_Callback(hObject, eventdata, handles)
