@@ -116,7 +116,7 @@ if isent, s='%n';
 else, s='%s';end
 ge=get(handles.radiobutton1,'Value');
 if ge,s=[s '%n%n'];end
-[fname pname]=uigetfile(fullfile(main_data.pname, '*'),'Select gene list...');
+[fname pname]=uigetfile(fullfile(main_data.pname, '*.*'),'Select gene list...');
 if ~fname,return;
 else,main_data.pname=pname;end
 f=fopen(fullfile(pname,fname));
@@ -198,18 +198,20 @@ else
 end
 clear c;
 pause(0.5);
+outdir=uigetdir(main_data.pname,'Please select a directory where the visualization will be saved.');
+if ~outdir, delete(h);return;end
 h=waitbar(0.25,'Writting javascript files');
 js=make_treemap_json_from_david(x);
-outdir=uigetdir;
-if ~outdir, delete(h);return;end
 unzip(which('david_clustering.zip'),outdir);
 f=fopen(fullfile(outdir,'david_clustering','data.js'),'w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
 waitbar(0.75,h,'Spawning web browser')
-[stat,hnd,url]=web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
+if ispc, dos(['start ' fullfile(outdir,'david_clustering','david_treemap.html')]);
+else, unix(['open ' fullfile(outdir,'david_clustering','david_treemap.html')]);end
+%web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
 waitbar(0.9,h,'Packaging web files for you to use later')
-[fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
+[fname pname]=uiputfile(fullfile(outdir,'david_cluster_report.zip'));
 if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,'david_clustering'));end
 delete(h)
 % --- Executes on selection change in popupmenu1.
