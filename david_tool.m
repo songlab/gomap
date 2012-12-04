@@ -124,7 +124,7 @@ D=textscan(f,s);
 if ge
     main_data.fc=D{2};
     main_data.pval=D{3};
-    [~,sidx]=sort(main_data.pval);
+    [~,sidx]=sort(main_data.fc,'descend');
     main_data.prank=sidx;
 end
 if isent
