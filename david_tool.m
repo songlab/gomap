@@ -142,7 +142,6 @@ if isent
     end
     main_data.gsymb=t;
 else
-    main_data.gsymb=D{1};
     isref=strcmp(main_data.id_type,'RefSeq accession');
     ishum=strcmp(main_data.species,'Homo sapien');
     if isref
@@ -155,11 +154,17 @@ else
         end
     end
     kz=symb2ent.keys;
+    k=1;
     for i=1:length(D{1})
         idx=find(strcmpi(D{1}{i},kz));
-        en(i)=symb2ent(kz(idx));
+        if ~isempty(idx)
+            gsymb{k}=D{1}{i};
+            en(k)=symb2ent(kz{min(idx)});
+            k=k+1;
+        end
     end
-    main_data.gid=en;    
+    main_data.gsymb=gsymb;
+    main_data.gid=en;
 end
 if ge
     gs{1}=sprintf('Gene : Entrez ID : Fold change : p-value\n');
