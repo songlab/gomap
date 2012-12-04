@@ -207,11 +207,8 @@ f=fopen(fullfile(outdir,'david_clustering','data.js'),'w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
 waitbar(0.75,h,'Spawning web browser')
-<<<<<<< HEAD
 web(fullfile('david_cluster_report','david_treemap.html'))
-=======
 [stat,hnd,url]=web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
->>>>>>> david_tool_giant
 waitbar(0.9,h,'Packaging web files for you to use later')
 [fname pname]=uiputfile(fullfile(main_data.pname,'david_cluster_report.zip'));
 if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,'david_clustering'));end
