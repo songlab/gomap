@@ -196,11 +196,7 @@ if isempty(main_data.eml)
     return;
 end
 c=query_david(main_data.gid,main_data.eml);
-if isempty(main_data.fc)
-    x=pack_david_clusr_for_treemap(c,[],main_data.GO);
-else
-    x=pack_david_clusr_for_treemap(c,main_data,main_data.GO);
-end
+x=pack_david_clusr_for_treemap(c,main_data,main_data.GO);
 clear c;
 pause(0.5);
 outdir=uigetdir(main_data.pname,'Please select a directory where the visualization will be saved.');
