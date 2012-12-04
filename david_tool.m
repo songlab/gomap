@@ -155,7 +155,7 @@ else
         end
     end
     kz=symb2ent.keys;
-    for i=1:lentgh(D{1})
+    for i=1:length(D{1})
         idx=find(strcmpi(D{1}{i},kz));
         en(i)=symb2ent(kz(idx));
     end
