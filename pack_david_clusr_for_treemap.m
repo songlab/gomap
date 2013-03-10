@@ -10,8 +10,11 @@ function x=pack_david_clusr_for_treemap(c,smp,GO)
 %
 %OUT:
 %   x is a structure encoding the 
-
-
+if isdeployed
+    f=fopen(fullfile(ctfroot,'david_cluster_report.txt'),'w');
+else
+    f=fopen(fullfile(pwd,'david_cluster_report.txt'),'w');
+end
 x=struct('id','root','name','root_node','data',[]); %root node
 %collect all the scores and cluster sizes
 for i=1:length(c)
@@ -19,13 +22,13 @@ for i=1:length(c)
     rec=c(i).getSimpleChartRecords;
     ntm(i)=length(rec);
 end
-if ~exist('scz','var'),alert('String','DAVID clustering error...');return;end
 mscz=max(scz);mntm=max(ntm);
 %color the GO term clusters by score, size them by cluster size
 %a range of colors from blue to red, one for each decile of score/p-value
 cmp={'#0000FF','#1900E6','#3300CC','#4D00B2','#800080','#990066','#B2004C','#CC0033','#E6001A','#FF0000'};
 %create a node for each cluster (clus) and set them to be the children of x
 for i=1:min(length(c),10)
+   if exist('d','var'),clear d;end
    rec=c(i).getSimpleChartRecords;%get all the terms in the cluster
    %set the nodes size by the number of GO terms, as a % of the max
    d.area=max(1,round(ntm(i)/mntm*10));%1<=dim,area<=10
@@ -44,32 +47,36 @@ for i=1:min(length(c),10)
    end
    if ~isempty(GO) %if we have GO information and the cluster name is a
        if isfield(d,'go') %GO term, annotate the node with GO term info
-           if length(GO(d.go).terms)>0
+           try
                trm=GO(d.go).terms(1);
                if ~isempty(trm.ontology)
-                   tmp=strrep(trm.ontology,'"','');
-                   tmp=strrep(tmp,':','');
-                   d.ont=tmp;
+                tmp=strrep(trm.ontology,'"','');
+                tmp=strrep(tmp,':','');
+                d.ont=tmp;
                end
                if ~isempty(trm.definition)
-                   tmp=strrep(trm.definition,'"','');
-                   tmp=strrep(tmp,':','');
-                   d.def=tmp;
+                tmp=strrep(trm.definition,'"','');
+                tmp=strrep(tmp,':','');
+                d.def=tmp;
                end
+           catch me
            end
-        end
+       end
    end
    clus=struct('id',id,'name',nm,'data',d);
-   %create a node for each GO term in cluster i and set them to be the
+   clear d;
+   %create a node for each GO term in cluster i
    %gtrm are the children of clus(i), one for each GO term
    for j=1:length(rec),pvl(j)=rec(j).getEase;end,mpvl=max(1-pvl);
    for j=1:length(rec)
+       if exist('d','var'),clear d;end
        %set the size of the node by the number of genes
        d.area=max(1,round(rec(j).getPercent));
        %set the color by p-value as a % of the minimum
        pr=max(1,round((1-pvl(j))/mpvl*10));%set color as a % of smallest pval
        d.color = cmp{pr};
        nm=char(rec(j).getTermName);
+       fprintf(f,'"%s",',strrep(nm,',',':'));fprintf(f,'%g,',pvl(j));fprintf(f,'%g\n',double(rec(j).getPercent));
        if strcmp(nm(1:3),'GO:') %if the cluster name is a GO term, deconstruct
            tstr=textscan(nm,'GO:%s%s','delimiter','~');
            nm=tstr{2}{:};
@@ -111,6 +118,9 @@ for i=1:min(length(c),10)
            if ~isempty(smp.fc)
                d.rank=smp.prank(idx(k));
                d.pvl=smp.pval(idx(k));
+               d.tt=smp.tt(idx(k));
+               d.nsh=smp.nsh(idx(k));
+               d.mlodz=smp.mlodz(idx(k));
                d.fc=smp.fc(idx(k));
                pr=floor(d.rank/mxr*10);
                d.color=cmp{max(1,end-pr)};
@@ -123,3 +133,4 @@ for i=1:min(length(c),10)
    end
    x.children(i)=clus;
 end
+fclose(f);
