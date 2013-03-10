@@ -118,7 +118,7 @@ ge=get(handles.radiobutton1,'Value');
 if ge,s=[s '%n%n'];end
 [fname pname]=uigetfile(fullfile(main_data.pname, '*.*'),'Select gene list...');
 if ~fname,return;
-else,main_data.pname=pname;end
+else,main_data.pname=pname;main_data.fname=fname;end
 f=fopen(fullfile(pname,fname));
 D=textscan(f,s);
 if ge
@@ -209,10 +209,14 @@ fprintf(f,'var json_data = %s;',js);
 fclose(f);
 waitbar(0.75,h,'Spawning web browser')
 if ispc, dos(['start ' fullfile(outdir,'david_clustering','david_treemap.html')]);
-else, unix(['open ' fullfile(outdir,'david_clustering','david_treemap.html')]);end
+elseif ismac, unix(['open ' fullfile(outdir,'david_clustering','david_treemap.html')]);
+else unix(['xdg-open ' fullfile(outdir,'david_clustering','david_treemap.html')]);end
 %web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
 waitbar(0.9,h,'Packaging web files for you to use later')
-[fname pname]=uiputfile(fullfile(outdir,'david_cluster_report.zip'));
+stl=length(main_data.fname);
+pnt_pt=min(strfind(main_data.fname,'.'));
+if ~isempty(pnt_pt), stl=pnt_pt;end
+[fname pname]=uiputfile(fullfile(outdir,[main_data.fname(1:stl) '_report.zip']));
 if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,'david_clustering'));end
 delete(h)
 % --- Executes on selection change in popupmenu1.

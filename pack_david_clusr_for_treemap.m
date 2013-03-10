@@ -19,6 +19,7 @@ for i=1:length(c)
     rec=c(i).getSimpleChartRecords;
     ntm(i)=length(rec);
 end
+if ~exist('scz','var'),alert('String','DAVID clustering error...');return;end
 mscz=max(scz);mntm=max(ntm);
 %color the GO term clusters by score, size them by cluster size
 %a range of colors from blue to red, one for each decile of score/p-value
@@ -43,18 +44,20 @@ for i=1:min(length(c),10)
    end
    if ~isempty(GO) %if we have GO information and the cluster name is a
        if isfield(d,'go') %GO term, annotate the node with GO term info
-           trm=GO(d.go).terms(1);
-           if ~isempty(trm.ontology)
-               tmp=strrep(trm.ontology,'"','');
-               tmp=strrep(tmp,':','');
-               d.ont=tmp;
+           if length(GO(d.go).terms)>0
+               trm=GO(d.go).terms(1);
+               if ~isempty(trm.ontology)
+                   tmp=strrep(trm.ontology,'"','');
+                   tmp=strrep(tmp,':','');
+                   d.ont=tmp;
+               end
+               if ~isempty(trm.definition)
+                   tmp=strrep(trm.definition,'"','');
+                   tmp=strrep(tmp,':','');
+                   d.def=tmp;
+               end
            end
-           if ~isempty(trm.definition)
-               tmp=strrep(trm.definition,'"','');
-               tmp=strrep(tmp,':','');
-               d.def=tmp;
-           end
-       end
+        end
    end
    clus=struct('id',id,'name',nm,'data',d);
    %create a node for each GO term in cluster i and set them to be the
