@@ -22,7 +22,7 @@ function varargout = david_tool(varargin)
 
 % Edit the above text to modify the response to help david_tool
 
-% Last Modified by GUIDE v2.5 22-Jan-2013 17:04:34
+% Last Modified by GUIDE v2.5 10-Mar-2013 17:58:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -52,62 +52,97 @@ function david_tool_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to david_tool (see VARARGIN)
 
+% % Choose default command line output for david_tool
+% handles.output = hObject;
+% % Update handles structure
+% guidata(hObject, handles);
+% 
+% if length(varargin)>0,smp=varargin{1};else,smp=[];end
+% main_data.id_type='ENTREZ gene ID';
+% if strcmp(smp.genome{3},'hg19'),main_data.species='Homo sapien';
+% elseif strcmp(smp.genome{3},'mm9'),main_data.species='Mus musculus';end
+% main_data.fc=smp.fc;
+% main_data.tt=smp.tt;
+% main_data.pval=smp.pval;
+% main_data.prank=smp.prank;
+% main_data.nsh=smp.nsh;
+% main_data.mlodz=smp.mlodz;
+% main_data.gsymb=smp.gsymb;
+% main_data.gid=smp.gid;
+% main_data.eml=get(handles.edit2,'String');
+% main_data.vis_dir='';
+% main_data.pname=smp.pname;
+% main_data.screen_pcut=smp.screen_pcut;
+% main_data.gexp_pcut=smp.gexp_pcut;
+% main_data.glists_textbox=smp.glists_textbox;
+% main_data.main_glst=smp.main_glst;
+% pareto_root_data=get(smp.pareto_gui_root_handle,'UserData');
+% if ~pareto_root_data.java_loaded
+%     h=waitbar(0,'loading java packaes. This only needs to be done once per session.');
+%     d=dir('david_java_client/lib/*.jar');
+%     wt=linspace(1/length(d),1,length(d));
+%     for i=1:length(d)
+%         s=fullfile(['david_java_client/lib/' d(i).name]);
+%         waitbar(wt(i),h,{'Loading java package:',strrep(s,'_','\_')})
+%         javaaddpath(s);   
+%     end
+%     import david.xsd.*;
+%     import org.apache.axis2.AxisFault;
+%     import sample.session.client.util.*;
+%     import sample.session.service.xsd.*;
+%     import sample.session.client.stub.*;
+%     delete(h);
+%     pareto_root_data.java_loaded=1;
+%     set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
+% end
+% if isempty(pareto_root_data.GO),
+%     wb=waitbar(0.5,'Loading gene ontology data. This needs to be done once per session.');
+%     main_data.GO=geneont('file','gene_ontology.obo');
+%     pareto_root_data.GO=main_data.GO;
+%     set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
+%     delete(wb);
+% else
+%     main_data.GO=pareto_root_data.GO;
+% end
+% %enter genes into the working list window
+% for i=1:length(main_data.gsymb),gs{i}=main_data.gsymb{i};end
+% set(handles.glist_textbox,'String',gs,'UserData',gs);
+% set(handles.david_tool_root,'UserData',main_data);
+
 % Choose default command line output for david_tool
 handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
 if length(varargin)>0,smp=varargin{1};else,smp=[];end
-main_data.id_type='ENTREZ gene ID';
-if strcmp(smp.genome{3},'hg19'),main_data.species='Homo sapien';
-elseif strcmp(smp.genome{3},'mm9'),main_data.species='Mus musculus';end
-main_data.fc=smp.fc;
-main_data.tt=smp.tt;
-main_data.pval=smp.pval;
-main_data.prank=smp.prank;
-main_data.nsh=smp.nsh;
-main_data.mlodz=smp.mlodz;
-main_data.gsymb=smp.gsymb;
-main_data.gid=smp.gid;
+main_data.id_type='ENTREZ IDs';
+main_data.species='Other';
+main_data.fc=[];main_data.tt=[];
+main_data.pval=[];main_data.prank=[];
+main_data.nsh=[];main_data.mlodz=[];
+main_data.gsymb=[];main_data.gid=[];
 main_data.eml=get(handles.edit2,'String');
-main_data.vis_dir='';
-main_data.pname=smp.pname;
-main_data.screen_pcut=smp.screen_pcut;
-main_data.gexp_pcut=smp.gexp_pcut;
-main_data.glists_textbox=smp.glists_textbox;
-main_data.main_glst=smp.main_glst;
-pareto_root_data=get(smp.pareto_gui_root_handle,'UserData');
-if ~pareto_root_data.java_loaded
-    h=waitbar(0,'loading java packaes. This only needs to be done once per session.');
-    d=dir('david_java_client/lib/*.jar');
-    wt=linspace(1/length(d),1,length(d));
-    for i=1:length(d)
-        s=fullfile(['david_java_client/lib/' d(i).name]);
-        waitbar(wt(i),h,{'Loading java package:',strrep(s,'_','\_')})
-        javaaddpath(s);   
-    end
-    import david.xsd.*;
-    import org.apache.axis2.AxisFault;
-    import sample.session.client.util.*;
-    import sample.session.service.xsd.*;
-    import sample.session.client.stub.*;
-    delete(h);
-    pareto_root_data.java_loaded=1;
-    set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
+main_data.vis_dir='';main_data.pname=[];
+main_data.screen_pcut=[];main_data.gexp_pcut=[];
+h=waitbar(0,'loading java packaes.');
+d=dir('david_java_client/lib/*.jar');
+wt=linspace(1/length(d),1,length(d));
+for i=1:length(d)
+    s=fullfile(['david_java_client/lib/' d(i).name]);
+    waitbar(wt(i),h,{'Loading java package:',strrep(s,'_','\_')})
+    javaaddpath(s);   
 end
-if isempty(pareto_root_data.GO),
-    wb=waitbar(0.5,'Loading gene ontology data. This needs to be done once per session.');
-    main_data.GO=geneont('file','gene_ontology.obo');
-    pareto_root_data.GO=main_data.GO;
-    set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
-    delete(wb);
-else
-    main_data.GO=pareto_root_data.GO;
-end
-%enter genes into the working list window
-for i=1:length(main_data.gsymb),gs{i}=main_data.gsymb{i};end
-set(handles.glist_textbox,'String',gs,'UserData',gs);
+import david.xsd.*;
+import org.apache.axis2.AxisFault;
+import sample.session.client.util.*;
+import sample.session.service.xsd.*;
+import sample.session.client.stub.*;
+delete(h);
+wb=waitbar(0.5,'Loading gene ontology data.');
+main_data.GO=geneont('file','gene_ontology.obo');
+delete(wb);
 set(handles.david_tool_root,'UserData',main_data);
+
 
 
 % UIWAIT makes david_tool wait for user response (see UIRESUME)
@@ -161,14 +196,10 @@ if isempty(main_data.eml)
     alert('title','Enter an email in the edit box which is registered with DAVID','String','No valid email found.');
     return;
 end
-gns=get(handles.glist_textbox,'String');%query DAVID only on the genes in the working genelist
-gids=[];j=1;                              %so loook up their ENTREZ IDs
-for i=1:length(gns)
-    idx=min(find(strcmpi(gns{i},main_data.gsymb)));
-    if ~isempty(idx),gids(j)=main_data.gid(idx);j=j+1;end
-end
-c=query_david(gids,main_data.eml);
-x=pack_david_clusr_for_treemap(c,main_data,main_data.GO);
+gene_data=get(handles.glist_textbox,'UserData');
+gene_data.gid
+c=query_david(gene_data.gid,main_data.eml);
+x=pack_david_clusr_for_treemap(c,gene_data,main_data.GO);
 gene_clusts={};
 for i=1:length(x.children) %10 clusters at most, set the radio button string for each
     gene_clusts{i}=[];
@@ -179,7 +210,16 @@ for i=1:length(x.children) %10 clusters at most, set the radio button string for
     eval(['set(handles.c' num2str(i) '_button,''String'',x.children(' num2str(i) ').name,''Value'',1)']);
 end
 set(handles.all_button,'Value',1);
-main_data.gene_clusts=gene_clusts;
+gene_data.gene_clusts=gene_clusts;
+set(handles.glist_textbox,'UserData',gene_data);
+main_data.gid=gene_data.gid;
+main_data.gsymb=gene_data.gsymb;
+if isfield(gene_data,'pval')
+    main_data.pval=gene_data.pval;
+    main_data.fc=gene_data.fc;
+end
+main_data.gene_disp_idx=1:length(gene_data.gsymb);
+set(handles.david_tool_root,'UserData',main_data);
 clear c;
 pause(0.5);
 outdir=uigetdir(main_data.pname,'Please select a directory where I can save your visualizations.');
@@ -221,34 +261,16 @@ function glist_textbox_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns glist_textbox contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from glist_textbox
-gnz=get(hObject,'UserData');
-s=gnz{get(hObject,'Value')};
-main_data=get(handles.david_tool_root,'UserData');
-glst_ids=get(handles.glist_textbox,'UserData');
-idx=min(find(strcmpi(s,main_data.gsymb)));
-set(handles.screen_rank_textbox,'String',num2str(main_data.prank(idx)));
-if main_data.pval(idx)<=main_data.screen_pcut
-    set(handles.screen_pval_textbox,'String',num2str(main_data.pval(idx)),'ForegroundColor','r');
+gene_data=get(hObject,'UserData');%this holds entrez ids, pval, fold change, etc
+gnz=get(hObject,'String');
+idx=get(hObject,'Value');
+if isfield(gene_data,'pval')&&~isempty(gene_data.pval)
+    set(handles.ttest_textbox,'String',num2str(gene_data.pval(idx)));
+    set(handles.exp_fc_textbox,'String',num2str(gene_data.fc(idx)));
 else
-    set(handles.screen_pval_textbox,'String',num2str(main_data.pval(idx)),'ForegroundColor','k');
-end
-set(handles.nsh_textbox,'String',num2str(main_data.nsh(idx)));
-if main_data.tt(idx)==-1,
     set(handles.ttest_textbox,'String','NA');
-    set(handles.exp_fc_textbox,'String','NA');    
-else
-    if main_data.tt(idx)<=main_data.gexp_pcut
-        set(handles.ttest_textbox,'String',num2str(main_data.tt(idx)),'ForegroundColor','r');
-    else
-        set(handles.ttest_textbox,'String',num2str(main_data.tt(idx)),'ForegroundColor','k');
-    end
-    set(handles.exp_fc_textbox,'String',num2str(main_data.fc(idx)));
+    set(handles.exp_fc_textbox,'String','NA');
 end
-set(handles.mlodz_textbox,'String',num2str(main_data.mlodz(idx)));
-if isfield(main_data,'net_cent_comb')
-    set(handles.net_cent_textbox,'String',num2str(main_data.net_cent_comb(idx)));
-end
-
 
 function edit2_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
@@ -311,18 +333,38 @@ function c1_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c1_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{1})
-    idx=min(find(main_data.gene_clusts{1}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{1})
+    idxt=min(find(gene_data.gene_clusts{1}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -334,21 +376,40 @@ function c2_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c2_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{2})
-    idx=min(find(main_data.gene_clusts{2}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{2})
+    idxt=min(find(gene_data.gene_clusts{2}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
-
 % --- Executes on button press in c3_button.
 function c3_button_Callback(hObject, eventdata, handles)
 % hObject    handle to c3_button (see GCBO)
@@ -357,18 +418,38 @@ function c3_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c3_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{3})
-    idx=min(find(main_data.gene_clusts{3}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{3})
+    idxt=min(find(gene_data.gene_clusts{3}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -380,20 +461,41 @@ function c4_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c4_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{4})
-    idx=min(find(main_data.gene_clusts{4}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{4})
+    idxt=min(find(gene_data.gene_clusts{4}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
+
 
 % --- Executes on button press in all_button.
 function all_button_Callback(hObject, eventdata, handles)
@@ -402,15 +504,15 @@ function all_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of all_button
-main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
-if get(hObject,'Value')
-    set(handles.glist_textbox,'String',main_data.gsymb);
-    for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',1)']);end
-else
-    set(handles.glist_textbox,'String',{});
-    for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',0)']);end
-end
+% main_data=get(handles.david_tool_root,'UserData');
+% if ~isfield(main_data,'gene_clusts'),return;end
+% if get(hObject,'Value')
+%     set(handles.glist_textbox,'String',main_data.gsymb);
+%     for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',1)']);end
+% else
+%     set(handles.glist_textbox,'String',{});
+%     for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',0)']);end
+% end
 
 % --- Executes on button press in c5_button.
 function c5_button_Callback(hObject, eventdata, handles)
@@ -420,18 +522,38 @@ function c5_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c5_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{5})
-    idx=min(find(main_data.gene_clusts{5}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{5})
+    idxt=min(find(gene_data.gene_clusts{5}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -443,18 +565,38 @@ function c6_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c6_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{6})
-    idx=min(find(main_data.gene_clusts{6}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{6})
+    idxt=min(find(gene_data.gene_clusts{6}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -466,18 +608,38 @@ function c7_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c7_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{7})
-    idx=min(find(main_data.gene_clusts{7}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{7})
+    idxt=min(find(gene_data.gene_clusts{7}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -489,18 +651,38 @@ function c8_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c8_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{8})
-    idx=min(find(main_data.gene_clusts{8}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{8})
+    idxt=min(find(gene_data.gene_clusts{8}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -512,18 +694,38 @@ function c9_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c9_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{9})
-    idx=min(find(main_data.gene_clusts{9}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{9})
+    idxt=min(find(gene_data.gene_clusts{9}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -535,18 +737,38 @@ function c10_button_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of c10_button
 main_data=get(handles.david_tool_root,'UserData');
-if ~isfield(main_data,'gene_clusts'),return;end
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
 gl={};j=1;
-for i=1:length(main_data.gene_clusts{10})
-    idx=min(find(main_data.gene_clusts{10}(i)==main_data.gid));
-    if ~isempty(idx),gl{j}=main_data.gsymb{idx};j=j+1;end
+for i=1:length(gene_data.gene_clusts{10})
+    idxt=min(find(gene_data.gene_clusts{10}(i)==main_data.gid));
+    if ~isempty(idxt),idx(j)=idxt;j=j+1;end
 end
+get(hObject,'Value')
 if get(hObject,'Value')
-    set(handles.glist_textbox,'String',...
-        union(gl,get(handles.glist_textbox,'String')));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=union(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
 else
-    set(handles.glist_textbox,'String',...
-        setdiff(get(handles.glist_textbox,'String'),gl));
+    cur_idx=main_data.gene_disp_idx;
+    cur_idx=setdiff(cur_idx,idx);
+    t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
+    if isfield(gene_data,'pval')
+        t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
+    end
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=cur_idx;
+    set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
 end
 
@@ -557,13 +779,32 @@ function delete_gene_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 idx=get(handles.glist_textbox,'Value');
 glist_old=get(handles.glist_textbox,'String');
+glist_data_old=get(handles.glist_textbox,'UserData');
 if isempty(idx)
-    set(handles.glist_textbox,'String',{},'UserData',{},'Value',1);
+    set(handles.glist_textbox,'String',{},'UserData',[],'Value',1);
 else
     j=1;
-    for i=1:idx-1,glist{j}=glist_old{i};j=j+1;end
-    for i=idx+1:length(glist_old),glist{j}=glist_old{i};j=j+1;end
-    set(handles.glist_textbox,'String',glist,'Value',max(1,idx-1));
+    for i=1:idx-1
+        glist_data.gid(j)=glist_data_old.gid(i);
+        glist_data.gsymb(j)=glist_data_old.gsymb(i);
+        if isfield(glist_data,'pval')&&~isempty(glist_data.pval)
+            glist_data.pval(j)=glist_data_old.pval(i);
+            glist_data.fc(j)=glist_data_old.fc(i);
+        end
+        glist{j}=glist_old{i};
+        j=j+1;
+    end
+    for i=idx+1:length(glist_old)
+        glist_data.gid(j)=glist_data_old.gid(i);
+        glist_data.gsymb(j)=glist_data_old.gsymb(i);
+        if isfield(glist_data,'pval')&&~isempty(glist_data.pval)
+            glist_data.pval(j)=glist_data_old.pval(i);
+            glist_data.fc(j)=glist_data_old.fc(i);
+        end
+        glist{j}=glist_old{i};
+        j=j+1;
+    end
+    set(handles.glist_textbox,'String',glist,'UserData',glist_data,'Value',max(1,idx-1));
 end
 
 
@@ -590,12 +831,34 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton15.
-function pushbutton15_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton15 (see GCBO)
+% --- Executes on button press in save_glist_pushbutton.
+function save_glist_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to save_glist_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+gns=get(handles.glist_textbox,'String');
+gene_data=get(handles.glist_textbox,'UserData');
+main_data=get(handles.david_tool_root,'UserData');
+if ~isfield(main_data,'last_dir')
+    [fname pname]=uiputfile('*.*','Save gene list to file...');
+else
+    [fname pname]=uiputfile([main_data.last_dir,'*.*'],'Save gene list to file...');
+end
+if ~isstr(fname),return;
+else
+    main_data.last_dir=pname;
+    set(handles.david_tool_root,'UserData',main_data);
+    f=fopen(fullfile(pname,fname),'w');
+end
+for i=1:length(gns)
+    fprintf(f,'%s\t',gns{i});
+    if ~isempty(gene_data.pval)
+        fprintf(f,'%g\t',gene_data.fc(i));
+        fprintf(f,'%g\t',gene_data.pval(i));
+    fprintf(f,'\n');
+    end
+end
+alert('String',['Wrote ' fname '...']);
 
 % --- Executes on button press in find_gene_button.
 function find_gene_button_Callback(hObject, eventdata, handles)
@@ -603,53 +866,228 @@ function find_gene_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 s=get(handles.find_gene_editbox,'String');
-sample_data=get(handles.david_tool_root,'UserData');
-idx=min(find(strcmpi(s,sample_data.gsymb)));
+if isempty(s), return;end
+gene_data=get(handles.glist_textbox,'UserData');
+idx=min(find(strcmpi(s,gene_data.gsymb)));
 if isempty(idx),set(handles.find_gene_editbox,'String','Gene not found!');return;end
 if ~isempty(idx)
     set(handles.glist_textbox,'Value',idx);
-    sample_data.gsymb(get(handles.glist_textbox,'Value'))
-    set(handles.screen_rank_textbox,'String',num2str(sample_data.prank(idx)));
-    if sample_data.pval(idx)<=sample_data.screen_pcut
-        set(handles.screen_pval_textbox,'String',num2str(sample_data.pval(idx)),'ForegroundColor','r');
-    else
-        set(handles.screen_pval_textbox,'String',num2str(sample_data.pval(idx)),'ForegroundColor','k');
-    end
-    set(handles.nsh_textbox,'String',num2str(sample_data.nsh(idx)));
-    if sample_data.tt(idx)==-1,
+    if isempty(gene_data.pval)
         set(handles.ttest_textbox,'String','NA');
-        set(handles.exp_fc_textbox,'String','NA');    
+        set(handles.exp_fc_textbox,'String','NA');
     else
-        if sample_data.tt(idx)<=sample_data.gexp_pcut
-            set(handles.ttest_textbox,'String',num2str(sample_data.tt(idx)),'ForegroundColor','r');
-        else
-            set(handles.ttest_textbox,'String',num2str(sample_data.tt(idx)),'ForegroundColor','k');
-        end
-        set(handles.exp_fc_textbox,'String',num2str(sample_data.fc(idx)));
-    end
-    set(handles.mlodz_textbox,'String',num2str(sample_data.mlodz(idx)));
-    if isfield(sample_data,'net_cent_comb')
-        set(handles.net_cent_textbox,'String',num2str(sample_data.net_cent_comb(idx)));
-
+        set(handles.ttest_textbox,'String',num2str(gene_data.pval(idx)));
+        set(handles.exp_fc_textbox,'String',num2str(gene_data.fc(idx)));
     end
 end
-
-% --- Executes on button press in export_gene_list.
-function export_gene_list_Callback(hObject, eventdata, handles)
-% hObject    handle to export_gene_list (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-main_data=get(handles.david_tool_root,'UserData');
-glst_ids=get(handles.glist_textbox,'String');
-glists=get(main_data.glists_textbox,'UserData');
-v=get(main_data.glists_textbox,'Value');
-glists{v}=glst_ids;
-set(main_data.glists_textbox,'UserData',glists);
-set(main_data.main_glst,'String',glst_ids,'UserData',glst_ids);
 
 % --- Executes during object creation, after setting all properties.
 function query_david_pushbutton_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to query_david_pushbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on button press in delete_list_pushbutton.
+function delete_list_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to delete_list_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+glists_data=get(handles.gene_lists,'UserData');%get gene lists data
+glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
+idx=get(handles.gene_lists,'Value')
+if length(glists_names)==1,gl_data={};gl_names={};
+else
+    j=1;
+    for i=1:idx-1
+        gl_data{j}=glists_data{i};
+        gl_names{j}=glists_names{i};
+        j=j+1;
+    end
+    for i=idx+1:length(glists_data)
+        gl_names{j}=glists_names{i};
+        gl_data{j}=glists_data{i}
+        j=j+1;
+    end
+end
+set(handles.gene_lists,'UserData',gl_data,'String',gl_names,'Value',max(1,idx-1));
+
+% --- Executes on button press in export_gene_list_pushbutton.
+function export_gene_list_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to export_gene_list_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+sample_data=get(handles.sample_list,'UserData');%get screen data
+main_data=get(handles.david_tool_root,'UserData');%get global data
+glists_data=get(handles.gene_lists,'UserData');%get gene lists data
+glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
+if isempty(glists_data),return;end
+idx=get(handles.gene_lists,'Value');
+gnz=glists_data{idx};
+if ~isfield(main_data,'last_dir')
+    [fname pname]=uiputfile(glists_names{idx},'Select a file to write to...');
+else
+    main_data.last_dir
+    [fname pname]=uiputfile('*.*','Select a file to write to...',fullfile(main_data.last_dir,[strrep(strrep(glists_names{idx},' ','_'),',',''),'.txt']));
+end
+if ~isstr(fname),return;
+else
+    main_data.last_dir=pname;
+    set(handles.david_tool_root,'UserData',main_data);
+end
+f=fopen(fullfile(pname,fname),'w');
+fprintf(f,'gene\tscreen_rank\tscreen_pvalue\tcollective_hairpin_activity\tnumber_of_active_hairpins');
+if ~isempty(sample_data.fc)
+    fprintf(f,'\ttreatment_over_control_fold_change\tttest_pvalue');
+end
+if ~isempty(sample_data.net_cent_comb)
+    fprintf(f,'\tnetwork_centrality');
+end
+fprintf(f,'\n');
+for i=1:length(gnz)
+    pidx=min(find(strcmpi(gnz{i},sample_data.gsymb)));
+    fprintf(f,'%s\t',gnz{i});
+    fprintf(f,'%u\t',sample_data.prank(pidx));
+    fprintf(f,'%g\t',sample_data.pval(pidx));
+    fprintf(f,'%g\t',sample_data.mlodz(pidx));
+    fprintf(f,'%u',sample_data.nsh(pidx));
+    if ~isempty(sample_data.fc)
+        fprintf(f,'\t%g\t',sample_data.fc(pidx));
+        fprintf(f,'%g',sample_data.tt(pidx));
+    end
+    if ~isempty(sample_data.net_cent_comb),fprintf(f,'\t%g',sample_data.net_cent_comb(pidx));end
+    fprintf(f,'\n');
+end
+
+% --- Executes on button press in new_list_pushbutton.
+function new_list_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to new_list_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+glists_data=get(handles.gene_lists,'UserData');%get gene lists data
+glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
+glists_data{end+1}=get(handles.glist_textbox,'UserData');;
+lst_name=set_sample_id('title','Enter gene list ID:','string',sprintf(['Enter a name for the gene list.']));
+if isempty(lst_name),glists_names{end+1}=['new_list' num2str(length(glists_names))];
+else,glists_names{end+1}=lst_name;end
+set(handles.gene_lists,'UserData',glists_data,'String',glists_names,'Value',length(glists_names));
+
+% --- Executes on button press in import_gene_list_pushbutton.
+function import_gene_list_pushbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to import_gene_list_pushbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+main_data=get(handles.david_tool_root,'UserData');%get global data
+glists_data=get(handles.gene_lists,'UserData');%get gene lists data
+glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
+idx=get(handles.gene_lists,'Value');
+list_info=choose_file_type('title','Select data type','String','Select gene ID type and organism');
+main_data.id_type=list_info.sample_type;
+main_data.species=list_info.genome;
+isent=strcmp(main_data.id_type,'ENTREZ IDs');
+ge=list_info.ge;
+if isent, s='%n';else, s='%s';end
+if ge,s=[s '%n%n'];end
+s=[s '%*[^\n]'];
+%get the filename
+if ~isfield(main_data,'last_dir')
+    [fname pname]=uigetfile('*.*','Select the gene list...');
+else
+    [fname pname]=uigetfile([main_data.last_dir,'*.*'],'Select the gene list...');
+end
+if ~isstr(fname),return;
+else
+    main_data.last_dir=pname;
+    set(handles.david_tool_root,'UserData',main_data);
+    f=fopen(fullfile(pname,fname));
+end
+D=textscan(f,s);
+if ge
+    gene_data.fc=D{2};
+    gene_data.pval=D{3};
+    [~,sidx]=sort(main_data.pval);
+    gene_data.prank=sidx;
+end
+if isent
+    gene_data.gid=D{1};gs={};
+    if strcmp(main_data.species,'Other')
+        for i=1:length(D{1}),gs{i}=num2str(D{1}(i));end
+    else
+        if strcmp(main_data.species,'Homo sapiens')
+            load('entrez2gsymb_hsa.mat');ent2symb=ent2symb_hsa;
+        end
+        if strcmp(main_data.species,'Mus musculus')
+            load('entrez2gsymb_mmu.mat');ent2symb=ent2symb_mmu;
+        end
+        for i=1:length(D{1})
+            if ent2symb.isKey(D{1}(i)),gs{i}=ent2symb(D{1}(i));
+            else, gs{i}=num2str(D{1}(i)),end
+        end
+    end
+    gene_data.gsymb=gs;
+else
+    isref=strcmp(main_data.id_type,'RefSeq accession');
+    ishum=strcmp(main_data.species,'Homo sapiens');
+    if isref
+        if ishum,load('refseq2entrez_hsa.mat');symb2ent=ref2ent_hsa;
+        else,load('refseq2entrez_mmu.mat');symb2ent=ref2ent_mmu;
+        end
+    else
+        if ishum,load('symb2entrez_hsa.mat');symb2ent=symb2ent_hsa;
+        else,load('symb2entrez_mmu.mat');symb2ent=symb2ent_mmu;
+        end
+    end
+    kz=symb2ent.keys;
+    k=1;
+    for i=1:length(D{1})
+        idx=find(strcmpi(D{1}{i},kz));
+        if ~isempty(idx)
+            gs{k}=D{1}{i};
+            en(k)=symb2ent(kz{min(idx)});
+            k=k+1;
+        end
+    end
+    gene_data.gid=en;
+    gene_data.gsymb=gs;
+end
+set(handles.glist_textbox,'String',gs,'UserData',gene_data,'Value',1);
+lst_name=[];
+lst_name=set_sample_id('title','Enter gene list ID:','string',sprintf(['Enter a name for the gene list\n(' fname ')']));
+if isempty(lst_name),glists_names{end+1}=['new_list' num2str(length(glists_names))];
+else,glists_names{end+1}=lst_name;end
+glists_data{end+1}=gene_data;
+set(handles.gene_lists,'UserData',glists_data,'String',glists_names,'Value',length(glists_names));
+set(handles.david_tool_root,'UserData',main_data);
+
+
+% --- Executes on selection change in gene_lists.
+function gene_lists_Callback(hObject, eventdata, handles)
+% hObject    handle to gene_lists (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns gene_lists contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from gene_lists
+glists_data=get(hObject,'UserData');%get gene lists data
+glists_names=get(hObject,'String');%get the name of all the gene lists
+idx=get(hObject,'Value');
+if ~isempty(idx)
+    set(handles.glist_textbox,'String',glists_data{idx},'UserData',glists_data{idx},'Value',1);
+else
+    set(handles.glist_textbox,'String',{},'UserData',{},'Value',1);
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function gene_lists_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to gene_lists (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
