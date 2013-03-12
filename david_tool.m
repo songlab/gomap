@@ -504,15 +504,26 @@ function all_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of all_button
-% main_data=get(handles.david_tool_root,'UserData');
-% if ~isfield(main_data,'gene_clusts'),return;end
-% if get(hObject,'Value')
-%     set(handles.glist_textbox,'String',main_data.gsymb);
-%     for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',1)']);end
-% else
-%     set(handles.glist_textbox,'String',{});
-%     for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',0)']);end
-% end
+main_data=get(handles.david_tool_root,'UserData');
+gene_data=get(handles.glist_textbox,'UserData');
+if ~isfield(gene_data,'gene_clusts'),return;end
+if get(hObject,'Value')
+    set(handles.glist_textbox,'String',main_data.gsymb);
+    t.pval=main_data.pval;t.fc=main_data.fc;
+    t.gsymb=main_data.gsymb;t.gid=main_data.gid;
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'UserData',t);
+    main_data.gene_disp_idx=1:length(main_data.gid);
+    set(handles.david_tool_root,'UserData',main_data);
+    for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',1)']);end
+else
+    t.gene_clusts=gene_data.gene_clusts;
+    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'String',{});
+    main_data.gene_disp_idx=[];
+    set(handles.david_tool_root,'UserData',main_data);
+    for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',0)']);end
+end
 
 % --- Executes on button press in c5_button.
 function c5_button_Callback(hObject, eventdata, handles)
@@ -787,9 +798,10 @@ else
     for i=1:idx-1
         glist_data.gid(j)=glist_data_old.gid(i);
         glist_data.gsymb(j)=glist_data_old.gsymb(i);
-        if isfield(glist_data,'pval')&&~isempty(glist_data.pval)
+        if isfield(glist_data_old,'pval')&&~isempty(glist_data_old.pval)
             glist_data.pval(j)=glist_data_old.pval(i);
             glist_data.fc(j)=glist_data_old.fc(i);
+            glist_data.prank(j)=glist_data_old.prank(i);
         end
         glist{j}=glist_old{i};
         j=j+1;
@@ -797,15 +809,17 @@ else
     for i=idx+1:length(glist_old)
         glist_data.gid(j)=glist_data_old.gid(i);
         glist_data.gsymb(j)=glist_data_old.gsymb(i);
-        if isfield(glist_data,'pval')&&~isempty(glist_data.pval)
+        if isfield(glist_data_old,'pval')&&~isempty(glist_data_old.pval)
             glist_data.pval(j)=glist_data_old.pval(i);
             glist_data.fc(j)=glist_data_old.fc(i);
+            glist_data.prank(j)=glist_data_old.prank(i);
         end
         glist{j}=glist_old{i};
         j=j+1;
     end
     set(handles.glist_textbox,'String',glist,'UserData',glist_data,'Value',max(1,idx-1));
 end
+
 
 
 
@@ -895,8 +909,11 @@ function delete_list_pushbutton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 glists_data=get(handles.gene_lists,'UserData');%get gene lists data
 glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
-idx=get(handles.gene_lists,'Value')
-if length(glists_names)==1,gl_data={};gl_names={};
+idx=get(handles.gene_lists,'Value');
+if length(glists_names)==1
+    set(handles.gene_lists,'UserData',{},'String',{});
+    set(handles.glist_textbox,'UserData',[],'String',{});
+    return;
 else
     j=1;
     for i=1:idx-1
@@ -909,9 +926,10 @@ else
         gl_data{j}=glists_data{i}
         j=j+1;
     end
+    set(handles.gene_lists,'UserData',gl_data,'String',gl_names,'Value',max(1,idx-1));
+    t=gl_data{max(1,idx-1)};
+    set(handles.glist_textbox,'UserData',t,'String',t.gsymb);
 end
-set(handles.gene_lists,'UserData',gl_data,'String',gl_names,'Value',max(1,idx-1));
-
 % --- Executes on button press in export_gene_list_pushbutton.
 function export_gene_list_pushbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to export_gene_list_pushbutton (see GCBO)
@@ -967,11 +985,13 @@ function new_list_pushbutton_Callback(hObject, eventdata, handles)
 
 glists_data=get(handles.gene_lists,'UserData');%get gene lists data
 glists_names=get(handles.gene_lists,'String');%get the name of all the gene lists
-glists_data{end+1}=get(handles.glist_textbox,'UserData');;
+gene_data=get(handles.glist_textbox,'UserData');
+glists_data{end+1}=gene_data;
 lst_name=set_sample_id('title','Enter gene list ID:','string',sprintf(['Enter a name for the gene list.']));
 if isempty(lst_name),glists_names{end+1}=['new_list' num2str(length(glists_names))];
 else,glists_names{end+1}=lst_name;end
-set(handles.gene_lists,'UserData',glists_data,'String',glists_names,'Value',length(glists_names));
+set(handles.gene_lists,'UserData',glists_data,'String',glists_names);
+
 
 % --- Executes on button press in import_gene_list_pushbutton.
 function import_gene_list_pushbutton_Callback(hObject, eventdata, handles)
@@ -1007,7 +1027,7 @@ D=textscan(f,s);
 if ge
     gene_data.fc=D{2};
     gene_data.pval=D{3};
-    [~,sidx]=sort(main_data.pval);
+    [~,sidx]=sort(gene_data.pval);
     gene_data.prank=sidx;
 end
 if isent
@@ -1074,9 +1094,34 @@ glists_data=get(hObject,'UserData');%get gene lists data
 glists_names=get(hObject,'String');%get the name of all the gene lists
 idx=get(hObject,'Value');
 if ~isempty(idx)
-    set(handles.glist_textbox,'String',glists_data{idx},'UserData',glists_data{idx},'Value',1);
+    gene_data=glists_data{idx};
+    set(handles.glist_textbox,'String',gene_data.gsymb,'UserData',glists_data{idx},'Value',1);
+    main_data=get(handles.david_tool_root,'UserData');
+    if isfield(gene_data,'pval')
+        main_data.pval=gene_data.pval;
+        main_data.fc=gene_data.fc;
+        main_data.prank=gene_data.prank;
+    else
+        main_data.pval=[];
+        main_data.fc=[];
+        main_data.prank=[];
+    end
+    main_data.gsymb=gene_data.gsymb;
+    main_data.gid=gene_data.gid;
+    set(handles.david_tool_root,'UserData',main_data);
+    for i=1:10
+        eval(['set(handles.c' num2str(i) '_button,''String'',''Cluster ' num2str(i) ''',''Value'',0)']);
+    end
+    set(handles.all_button,'Value',0);
 else
     set(handles.glist_textbox,'String',{},'UserData',{},'Value',1);
+    main_data.pval=[];main_data.fc=[];main_data.prank=[];
+    main_data.gsymb=[];main_data.gid=[];
+    set(handles.david_tool_root,'UserData',main_data);
+    for i=1:10
+        eval(['set(handles.c' num2str(i) '_button,''String'',''Cluster ' num2str(i) ''',''Value'',0)']);
+    end
+    set(handles.all_button,'Value',0);
 end
 
 

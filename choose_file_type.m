@@ -22,7 +22,7 @@ function varargout = choose_file_type(varargin)
 
 % Edit the above text to modify the response to help choose_file_type
 
-% Last Modified by GUIDE v2.5 10-Mar-2013 12:58:53
+% Last Modified by GUIDE v2.5 11-Mar-2013 12:46:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

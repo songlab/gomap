@@ -118,9 +118,6 @@ for i=1:min(length(c),10)
            if isfield(smp,'fc')&&~isempty(smp.fc)
                d.rank=smp.prank(idx(k));
                d.pvl=smp.pval(idx(k));
-               d.tt=smp.tt(idx(k));
-               d.nsh=smp.nsh(idx(k));
-               d.mlodz=smp.mlodz(idx(k));
                d.fc=smp.fc(idx(k));
                pr=floor(d.rank/mxr*10);
                d.color=cmp{max(1,end-pr)};
