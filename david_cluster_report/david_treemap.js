@@ -9,7 +9,7 @@ var labelType, useGradients, nativeTextSupport, animate;
         && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
   //I'm setting this based on the fact that ExCanvas provides text support for IE
   //and that as of today iPhone/iPad current text support is lame
-  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
+    labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
   nativeTextSupport = labelType == 'Native';
   useGradients = nativeCanvasSupport;
   animate = !(iStuff || !nativeCanvasSupport);
@@ -43,11 +43,19 @@ function init(){
     //box offsets
     offset: 1,
     //use canvas text
-    Label: {
-	      type: labelType,
-      size: 12,
-      family: 'Tahoma, Verdana, Arial'
-    },
+//    Label: {
+//	type:labelType,
+//      size: 20,
+//      family: 'Tahoma, Verdana, Arial'
+//    },
+      NodeStyles: {  
+	  enable: true,  
+	  type: 'Native',  
+	  stylesHover: {    
+	      color: '#fcc'  
+	  },  
+	  duration: 600  
+      },  
     //enable specific canvas styles
     //when rendering nodes
     Node: {
@@ -72,18 +80,18 @@ function init(){
       onMouseEnter: function(node, eventInfo) {
         if(node) {
           //add node selected styles and replot node
-          node.setCanvasStyle('shadowBlur', 7);
-	  node.setData('oldcolor',node.getData('color'));
-          node.setData('color', '#B22222');
-          tm.fx.plotNode(node, tm.canvas);
-          tm.labels.plotLabel(tm.canvas, node);
+//          node.setCanvasStyle('shadowBlur', 20);
+	  //node.setData('oldcolor',node.getData('color'));
+          //node.setData('color', '#B22222');
+//          tm.fx.plotNode(node, tm.canvas);
+ //         tm.labels.plotLabel(tm.canvas, node);
         }
       },
       onMouseLeave: function(node) {
         if(node) {
-	    node.setData('color',node.getData('oldcolor'));
-          node.removeCanvasStyle('shadowBlur');
-          tm.plot();
+	    //node.setData('color',node.getData('oldcolor'));
+ //         node.removeCanvasStyle('shadowBlur');
+ //         tm.plot();
         }
       }
     },
@@ -95,7 +103,7 @@ function init(){
       type: 'Native',
       //add positioning offsets
       offsetX: 20,
-      offsetY: 20,
+      offsetY: -100,
       //implement the onShow method to
       //add content to the tooltip when a node
       //is hovered
