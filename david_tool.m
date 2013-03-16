@@ -222,7 +222,11 @@ main_data.gene_disp_idx=1:length(gene_data.gsymb);
 set(handles.david_tool_root,'UserData',main_data);
 clear c;
 pause(0.5);
-outdir=uigetdir(main_data.pname,'Please select a directory where I can save your visualizations.');
+if ~isdeployed
+    outdir=uigetdir(main_data.pname,'Please select a directory where I can save your visualizations.');
+else
+    outdir=ctfroot;
+end
 if ~outdir, delete(h);return;end
 main_data.vis_dir=outdir;
 set(handles.david_tool_root,'UserData',main_data);
