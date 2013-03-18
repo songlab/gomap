@@ -354,7 +354,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -366,7 +366,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -397,7 +397,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -409,7 +409,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -439,7 +439,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -451,7 +451,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -482,7 +482,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -494,7 +494,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -516,13 +516,13 @@ if get(hObject,'Value')
     t.pval=main_data.pval;t.fc=main_data.fc;
     t.gsymb=main_data.gsymb;t.gid=main_data.gid;
     t.gene_clusts=gene_data.gene_clusts;
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=1:length(main_data.gid);
     set(handles.david_tool_root,'UserData',main_data);
     for i=1:10,eval(['set(handles.c' num2str(i) '_button,''Value'',1)']);end
 else
     t.gene_clusts=gene_data.gene_clusts;
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     set(handles.glist_textbox,'String',{});
     main_data.gene_disp_idx=[];
     set(handles.david_tool_root,'UserData',main_data);
@@ -554,7 +554,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -566,7 +566,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -597,7 +597,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -609,7 +609,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -640,7 +640,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -652,7 +652,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -683,7 +683,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -695,7 +695,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -726,7 +726,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -738,7 +738,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
@@ -769,7 +769,7 @@ if get(hObject,'Value')
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
 else
@@ -781,7 +781,7 @@ else
     end
     t.gene_clusts=gene_data.gene_clusts;
     set(handles.glist_textbox,'String',main_data.gsymb(cur_idx));
-    set(handles.glist_textbox,'UserData',t);
+    set(handles.glist_textbox,'UserData',t,'Value',1);
     main_data.gene_disp_idx=cur_idx;
     set(handles.david_tool_root,'UserData',main_data);
     set(handles.all_button,'Value',0);
