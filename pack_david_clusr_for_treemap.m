@@ -109,13 +109,8 @@ for i=1:min(length(c),10)
        %parse the gene ids
        gns=textscan(char(rec(j).getGeneIds),'%s','EndOfLine',',');gns=gns{1};
        d.area=d.area/length(gns);
-<<<<<<< HEAD
-       for k=1:length(gns),gns{k},idx(k)=min(find(smp.gid==str2num(gns{k})));end
-       if ~isempty(smp.prank),mxr=max(smp.prank(idx));end
-=======
-       for k=1:length(gns),idx(k)=find(smp.gid==str2num(gns{k}));end
+       for k=1:length(gns),idx(k)=min(find(smp.gid==str2num(gns{k})));end
        if isfield(smp,'prank')&&~isempty(smp.prank),mxr=max(smp.prank(idx));end
->>>>>>> david_tool0.2
        %create a child node of gtrm
        for k=1:length(gns)
            %extract the screen enrichment data and save in the gene nodes
