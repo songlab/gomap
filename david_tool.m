@@ -349,7 +349,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -361,7 +361,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -392,7 +392,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -404,7 +404,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -434,7 +434,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -446,7 +446,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -477,7 +477,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -489,7 +489,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -549,7 +549,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -561,7 +561,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -592,7 +592,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -604,7 +604,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -635,7 +635,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -647,7 +647,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -678,7 +678,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -690,7 +690,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -721,7 +721,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -733,7 +733,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -764,7 +764,7 @@ if get(hObject,'Value')
     cur_idx=main_data.gene_disp_idx;
     cur_idx=union(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
@@ -776,7 +776,7 @@ else
     cur_idx=main_data.gene_disp_idx;
     cur_idx=setdiff(cur_idx,idx);
     t=[];t.gsymb=main_data.gsymb(cur_idx);t.gid=main_data.gid(cur_idx);
-    if isfield(gene_data,'pval')
+    if isempty(main_data.pval)
         t.pval=main_data.pval(cur_idx);t.fc=main_data.fc(cur_idx);
     end
     t.gene_clusts=gene_data.gene_clusts;
