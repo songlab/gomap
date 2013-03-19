@@ -109,7 +109,7 @@ for i=1:min(length(c),10)
        %parse the gene ids
        gns=textscan(char(rec(j).getGeneIds),'%s','EndOfLine',',');gns=gns{1};
        d.area=d.area/length(gns);
-       for k=1:length(gns),idx(k)=min(find(smp.gid==str2num(gns{k})));end
+       for k=1:lengthx(gns),idx(k)=min(find(smp.gid==str2num(gns{k})));end
        if isfield(smp,'prank')&&~isempty(smp.prank),mxr=max(smp.prank(idx));end
        %create a child node of gtrm
        for k=1:length(gns)

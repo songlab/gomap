@@ -1029,10 +1029,10 @@ else
 end
 D=textscan(f,s);
 if ge
-    gene_data.fc=D{2};
-    gene_data.pval=D{3};
-    [~,sidx]=sort(gene_data.pval);
-    gene_data.prank=sidx;
+    fc=D{2};%gene_data.fc=D{2};
+    pval=D{3};%gene_data.pval=D{3};
+    [~,sidx]=sort(pval);
+    prank=sidx;%gene_data.prank=sidx;
 end
 if isent
     gene_data.gid=D{1};gs={};
@@ -1051,6 +1051,9 @@ if isent
         end
     end
     gene_data.gsymb=gs;
+    gene_data.fc=fc;
+    gene_data.pval=pval;
+    gene_data.prank=prank;
 else
     isref=strcmp(main_data.id_type,'RefSeq accession');
     ishum=strcmp(main_data.species,'Homo sapiens');
@@ -1064,17 +1067,30 @@ else
         end
     end
     kz=symb2ent.keys;
-    k=1;
-    for i=1:length(D{1})
+    k=1;r=1;not_found={};
+    for i=1:length(D{1}) %look for each gene symbol's entrez id
         idx=find(strcmpi(D{1}{i},kz));
         if ~isempty(idx)
             gs{k}=D{1}{i};
             en(k)=symb2ent(kz{min(idx)});
+            gene_data.fc(k)=fc(i);
+            gene_data.pval(k)=pval(i);
+            gene_data.prank(k)=prank(i);
             k=k+1;
-        end
+        else
+            not_found{r}=D{1}{i};r=r+1;
+        end                         
     end
     gene_data.gid=en;
     gene_data.gsymb=gs;
+        if ~isempty(not_found)
+            out_str=[num2str(length(not_found)),...
+                sprintf(' genes could not be identified\n'),...
+                sprintf('try using unique identifiers like ENTREZ ids. Genes not found:\n')];
+            for u=1:length(not_found)-1,out_str=[out_str,sprintf('%s,',not_found{u})];end
+            out_str=[out_str,sprintf('%s',not_found{end})];
+            alert('String',out_str);
+        end 
 end
 set(handles.glist_textbox,'String',gs,'UserData',gene_data,'Value',1);
 lst_name=[];
