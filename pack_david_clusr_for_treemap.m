@@ -110,7 +110,7 @@ for i=1:min(length(c),10)
        gns=textscan(char(rec(j).getGeneIds),'%s','EndOfLine',',');gns=gns{1};
        d.area=d.area/length(gns);
        for k=1:length(gns),idx(k)=min(find(smp.gid==str2num(gns{k})));end
-       if isfield(smp,'prank')&&~isempty(smp.prank),mxr=max(smp.prank(idx));end
+       if isfield(smp,'prank')&&~isempty(smp.prank),mxr=max(smp.prank);end
        %create a child node of gtrm
        for k=1:length(gns)
            %extract the screen enrichment data and save in the gene nodes
@@ -119,8 +119,7 @@ for i=1:min(length(c),10)
                d.rank=smp.prank(idx(k));
                d.pvl=smp.pval(idx(k));
                d.fc=smp.fc(idx(k));
-               pr=floor(d.rank/mxr*10);
-               d.color=cmp{max(1,end-pr)};
+               d.color=cmp{max(1,10-floor((d.rank/mxr)*10))};
            end
            gtrm.children(k)=struct('id',...
                    ['gn_' num2str(i) '_' num2str(j) '_' num2str(k) '_' gns{k}],...
