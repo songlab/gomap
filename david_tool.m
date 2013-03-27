@@ -241,12 +241,18 @@ if ispc, dos(['start ' fullfile(outdir,'david_clustering','david_treemap.html') 
 elseif ismac, unix(['open ' fullfile(outdir,'david_clustering','david_treemap.html') ' &']);
 else unix(['firefox ' fullfile(outdir,'david_clustering','david_treemap.html') ' &']);end
 %web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
-waitbar(0.9,h,'Packaging web files for you to use later')
 if get(handles.to_file_radiobutton,'Value')
+    waitbar(0.9,h,'Packaging web files for you to use later')
     [fname pname]=uiputfile(fullfile(outdir,'david_cluster_report.zip'));
-    if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,'david_clustering'));end
-    f=fopen(fullfile(ctfroot,'david_cluster_report.txt'));
-    g=fopen(fullfile(pname,[fname '_goterm_list.csv']),'w');
+    t=min(strfind(fname,'.'));
+    if isempty(t),flnm=fname;else,flnm=fname(1:max(1,t-1));end
+    if ispc,dos(['rename ' fullfile(outdir,'david_clustering') ' ' fullfile(outdir,flnm)])
+    else, unix(['mv ' fullfile(outdir,'david_clustering') ' ' fullfile(outdir,flnm)]),end
+    if ~isequal(fname,0)&~isequal(pname,0),zip(fullfile(pname,fname),fullfile(outdir,flnm));end
+    if isdeployed,tfl=fullfile(ctfroot,'david_cluster_report.txt');
+    else,tfl=fullfile(pwd,'david_cluster_report.txt');end
+    f=fopen(tfl);
+    g=fopen(fullfile(pname,[flnm '_goterm_list.csv']),'w');
     D=textscan(f,'%s%n%n','Delimiter',',');
     for i=1:length(D{1})
         fprintf(g,'%s,',D{1}{i});
