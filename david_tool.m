@@ -1057,9 +1057,11 @@ if isent
         end
     end
     gene_data.gsymb=gs;
-    gene_data.fc=fc;
-    gene_data.pval=pval;
-    gene_data.prank=prank;
+    if exist('fc','var')
+        gene_data.fc=fc;
+        gene_data.pval=pval;
+        gene_data.prank=prank;
+    end
 else
     isref=strcmp(main_data.id_type,'RefSeq accession');
     ishum=strcmp(main_data.species,'Homo sapiens');
@@ -1079,9 +1081,11 @@ else
         if ~isempty(idx)
             gs{k}=D{1}{i};
             en(k)=symb2ent(kz{min(idx)});
-            gene_data.fc(k)=fc(i);
-            gene_data.pval(k)=pval(i);
-            gene_data.prank(k)=prank(i);
+            if exist('fc','var')
+                gene_data.fc(k)=fc(i);
+                gene_data.pval(k)=pval(i);
+                gene_data.prank(k)=prank(i);
+            end
             k=k+1;
         else
             not_found{r}=D{1}{i};r=r+1;
