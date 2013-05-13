@@ -52,68 +52,11 @@ function david_tool_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to david_tool (see VARARGIN)
 
-% % Choose default command line output for david_tool
-% handles.output = hObject;
-% % Update handles structure
-% guidata(hObject, handles);
-% 
-% if length(varargin)>0,smp=varargin{1};else,smp=[];end
-% main_data.id_type='ENTREZ gene ID';
-% if strcmp(smp.genome{3},'hg19'),main_data.species='Homo sapien';
-% elseif strcmp(smp.genome{3},'mm9'),main_data.species='Mus musculus';end
-% main_data.fc=smp.fc;
-% main_data.tt=smp.tt;
-% main_data.pval=smp.pval;
-% main_data.prank=smp.prank;
-% main_data.nsh=smp.nsh;
-% main_data.mlodz=smp.mlodz;
-% main_data.gsymb=smp.gsymb;
-% main_data.gid=smp.gid;
-% main_data.eml=get(handles.edit2,'String');
-% main_data.vis_dir='';
-% main_data.pname=smp.pname;
-% main_data.screen_pcut=smp.screen_pcut;
-% main_data.gexp_pcut=smp.gexp_pcut;
-% main_data.glists_textbox=smp.glists_textbox;
-% main_data.main_glst=smp.main_glst;
-% pareto_root_data=get(smp.pareto_gui_root_handle,'UserData');
-% if ~pareto_root_data.java_loaded
-%     h=waitbar(0,'loading java packaes. This only needs to be done once per session.');
-%     d=dir('david_java_client/lib/*.jar');
-%     wt=linspace(1/length(d),1,length(d));
-%     for i=1:length(d)
-%         s=fullfile(['david_java_client/lib/' d(i).name]);
-%         waitbar(wt(i),h,{'Loading java package:',strrep(s,'_','\_')})
-%         javaaddpath(s);   
-%     end
-%     import david.xsd.*;
-%     import org.apache.axis2.AxisFault;
-%     import sample.session.client.util.*;
-%     import sample.session.service.xsd.*;
-%     import sample.session.client.stub.*;
-%     delete(h);
-%     pareto_root_data.java_loaded=1;
-%     set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
-% end
-% if isempty(pareto_root_data.GO),
-%     wb=waitbar(0.5,'Loading gene ontology data. This needs to be done once per session.');
-%     main_data.GO=geneont('file','gene_ontology.obo');
-%     pareto_root_data.GO=main_data.GO;
-%     set(smp.pareto_gui_root_handle,'UserData',pareto_root_data);
-%     delete(wb);
-% else
-%     main_data.GO=pareto_root_data.GO;
-% end
-% %enter genes into the working list window
-% for i=1:length(main_data.gsymb),gs{i}=main_data.gsymb{i};end
-% set(handles.glist_textbox,'String',gs,'UserData',gs);
-% set(handles.david_tool_root,'UserData',main_data);
-
 % Choose default command line output for david_tool
 handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
-
+%initialize root window variables
 if length(varargin)>0,smp=varargin{1};else,smp=[];end
 main_data.id_type='ENTREZ IDs';
 main_data.species='Other';
@@ -124,6 +67,7 @@ main_data.gsymb=[];main_data.gid=[];
 main_data.eml=get(handles.edit2,'String');
 main_data.vis_dir='';main_data.pname=[];
 main_data.screen_pcut=[];main_data.gexp_pcut=[];
+%load david java client
 h=waitbar(0,'loading java packaes.');
 d=dir('david_java_client/lib/*.jar');
 wt=linspace(1/length(d),1,length(d));
@@ -142,12 +86,6 @@ wb=waitbar(0.5,'Loading gene ontology data.');
 main_data.GO=geneont('file','gene_ontology.obo');
 delete(wb);
 set(handles.david_tool_root,'UserData',main_data);
-
-
-
-% UIWAIT makes david_tool wait for user response (see UIRESUME)
-% uiwait(handles.david_tool_root);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = david_tool_OutputFcn(hObject, eventdata, handles) 
@@ -198,10 +136,10 @@ if isempty(main_data.eml)
 end
 gene_data=get(handles.glist_textbox,'UserData');
 gene_data.gid
-c=query_david(gene_data.gid,main_data.eml);
-x=pack_david_clusr_for_treemap(c,gene_data,main_data.GO);
+c=query_david(gene_data.gid,main_data.eml); %query david
+x=pack_david_clusr_for_treemap(c,gene_data,main_data.GO); %pack the results
 gene_clusts={};
-for i=1:length(x.children) %10 clusters at most, set the radio button string for each
+for i=1:length(x.children) %Set radio buttons for the top 10 clusters
     gene_clusts{i}=[];
     for j=1:length(x.children(i).children)
        D=textscan(x.children(i).children(j).data.gns,'%n','Delimiter',',');
@@ -212,6 +150,7 @@ end
 set(handles.all_button,'Value',1);
 gene_data.gene_clusts=gene_clusts;
 set(handles.glist_textbox,'UserData',gene_data);
+%update root window data with the current gene list
 main_data.gid=gene_data.gid;
 main_data.gsymb=gene_data.gsymb;
 if isfield(gene_data,'pval')
@@ -232,15 +171,17 @@ main_data.vis_dir=outdir;
 set(handles.david_tool_root,'UserData',main_data);
 h=waitbar(0.25,'Writting javascript files');
 js=make_treemap_json_from_david(x);
+%generate javascripts for the visualization
 unzip(which('david_clustering.zip'),outdir);
 f=fopen(fullfile(outdir,'david_clustering','data.js'),'w');
 fprintf(f,'var json_data = %s;',js);
 fclose(f);
+%load the visualization in a browser
 waitbar(0.75,h,'Spawning web browser')
 if ispc, dos(['start ' fullfile(outdir,'david_clustering','david_treemap.html') ' &']);
 elseif ismac, unix(['open ' fullfile(outdir,'david_clustering','david_treemap.html') ' &']);
 else unix(['firefox ' fullfile(outdir,'david_clustering','david_treemap.html') ' &']);end
-%web(['file://' fullfile(outdir,'david_clustering','david_treemap.html')],'-browser')
+%if requested, write the visualization web-page to a ZIP file
 if get(handles.to_file_radiobutton,'Value')
     waitbar(0.9,h,'Packaging web files for you to use later')
     [fname pname]=uiputfile(fullfile(outdir,'david_cluster_report.zip'));

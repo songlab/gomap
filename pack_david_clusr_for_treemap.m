@@ -9,7 +9,8 @@ function x=pack_david_clusr_for_treemap(c,smp,GO)
 %obo file
 %
 %OUT:
-%   x is a structure encoding the 
+%   x is a structure encoding the cluster report, packed into a format 
+%readable by the InvoVis toolbox
 if isdeployed
     f=fopen(fullfile(ctfroot,'david_cluster_report.txt'),'w');
 else

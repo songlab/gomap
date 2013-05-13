@@ -20,6 +20,5 @@ javarmpath('./JSON-java.jar');
 js=strrep(js,'area','$area');%the $ prefix is needed by the Jit treemap code
 js=strrep(js,'dim','$dim');
 js=strrep(js,'color','$color');
-%js=strrep(js,'[]','{}');%this is unlikely to be necessary
 js=strrep(js,'"','\"');%the treemap code sets the data as a java string
 js=['"' js '"'];
